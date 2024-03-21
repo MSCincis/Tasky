@@ -46,4 +46,66 @@ export default class DatabaseService {
   }
 
   // Additional methods for adding, retrieving, and deleting tasks will be implemented here.
+
+  // Method to add a new task
+  addTask(title, description) {
+    return new Promise((resolve, reject) => {
+      this.db.transaction((tx) => {
+        tx.executeSql(
+          'INSERT INTO Tasks (title, description) VALUES (?, ?)',
+          [title, description],
+          (tx, results) => {
+            resolve(results);
+          },
+          error => {
+            reject(error);
+          }
+        );
+      });
+    });
+  }
+
+  // Method to retrieve all tasks
+  getAllTasks() {
+    return new Promise((resolve, reject) => {
+      this.db.transaction((tx) => {
+        tx.executeSql(
+          'SELECT * FROM Tasks',
+          [],
+          (tx, results) => {
+            let tasks = [];
+            for (let i = 0; i < results.rows.length; i++) {
+              tasks.push(results.rows.item(i));
+            }
+            resolve(tasks);
+          },
+          error => {
+            reject(error);
+          }
+        );
+      });
+    });
+  }
+
+  // Method to delete a task
+  deleteTask(id) {
+    return new Promise((resolve, reject) => {
+      this.db.transaction((tx) => {
+        tx.executeSql(
+          'DELETE FROM Tasks WHERE id = ?',
+          [id],
+          (tx, results) => {
+            resolve(results);
+          },
+          error => {
+            reject(error);
+          }
+        );
+      });
+    });
+  }
 }
+
+// Make sure to export an instance of the DatabaseService so it can be imported and used in other files.
+/* const databaseService = new DatabaseService();
+export default DatabaseService;*/
