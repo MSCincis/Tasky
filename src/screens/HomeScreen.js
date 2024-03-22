@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { Alert, View, Text, FlatList, Button, StyleSheet, TouchableOpacity } from 'react-native';
 import databaseService from '../database/DatabaseService'; // Adjust the import path as necessary
 
 const HomeScreen = ({ navigation }) => {
@@ -20,6 +20,23 @@ const HomeScreen = ({ navigation }) => {
     }
   };
 
+  const handleDeleteTask = (id) => {
+    Alert.alert("Delete Task", "Are you sure you want to delete this task?", [
+        {
+            text: "Cancel",
+            style: "cancel"
+        },
+        {
+            text: "Delete",
+            onPress: async () => {
+                await databaseService.deleteTask(id);
+                fetchTasks(); // Refresh the tasks list
+            },
+            style: "destructive"
+        }
+    ]);
+};
+
   return (
     <View style={styles.container}>
       <FlatList
@@ -29,6 +46,7 @@ const HomeScreen = ({ navigation }) => {
           <View style={styles.taskItem}>
             <Text style={styles.title}>{item.title}</Text>
             <Text>{item.description}</Text>
+            <Button title="Delete" onPress={() => handleDeleteTask(item.id)} />
           </View>
         )}
       />
