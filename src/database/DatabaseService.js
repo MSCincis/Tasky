@@ -42,6 +42,21 @@ class DatabaseService {
       });
     });
   }
+  deleteTask(id) {
+    return new Promise((resolve, reject) => {
+        this.db.transaction(tx => {
+            tx.executeSql(
+                "DELETE FROM Tasks WHERE id = ?;",
+                [id],
+                (_, result) => resolve(result),
+                (_, error) => {
+                    console.log("Error deleting task:", error);
+                    reject(error);
+                }
+            );
+        });
+    });
+  }
 }
 
 const databaseService = new DatabaseService();
